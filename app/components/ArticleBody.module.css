@@ -1,0 +1,553 @@
+/**
+ * Body block layouts, ported from the legacy per-article CSS.
+ *
+ * Measure and body size come from --copy / --copy-size / --copy-leading, which
+ * [data-density] sets on the article. That is what preserves each piece's own
+ * reading scale instead of flattening all seven onto one.
+ */
+
+.body {
+  --gutter: 24px;
+}
+
+/* ── Prose ── */
+
+.copy {
+  max-width: var(--copy);
+  margin-inline: auto;
+  padding-inline: 36px;
+}
+
+.p {
+  font-size: var(--copy-size);
+  line-height: var(--copy-leading);
+  color: var(--prose);
+  margin-bottom: 1.35em;
+}
+
+.lead {
+  font-size: calc(var(--copy-size) * 1.22);
+  line-height: 1.55;
+  color: var(--white);
+  margin-bottom: 1.3em;
+}
+
+.h2 {
+  font-family: var(--serif);
+  font-size: clamp(26px, 3vw, 40px);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--white);
+  margin: 1.4em 0 0.5em;
+  text-wrap: balance;
+}
+
+.h3 {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--white);
+  margin: 1.3em 0 0.45em;
+}
+
+.p em,
+.lead em {
+  font-style: italic;
+}
+
+.p strong,
+.lead strong {
+  color: var(--white);
+  font-weight: 400;
+}
+
+.p a,
+.lead a {
+  color: var(--gold);
+  text-underline-offset: 3px;
+}
+
+/* Centred italic between gold rules — the treatment articles I and II use. */
+.pull {
+  display: block;
+  max-width: var(--copy);
+  margin: 32px auto;
+  padding: 24px 36px;
+  font-size: clamp(18px, 2.8vw, 34px);
+  font-style: italic;
+  line-height: 1.25;
+  color: var(--white);
+  text-align: center;
+  border-top: 1px solid var(--gold);
+  border-bottom: 1px solid var(--gold);
+}
+
+/* ── Single images ── */
+
+.figure {
+  margin: 56px auto;
+  padding-inline: 24px;
+  max-width: 1100px;
+}
+
+.figureInline {
+  max-width: calc(var(--copy) + 120px);
+}
+
+.figurePortrait {
+  max-width: 540px;
+}
+
+/* Edge to edge, at the fixed viewport height the legacy pages used. */
+.figureFullBleed {
+  max-width: none;
+  padding-inline: 0;
+  margin: 60px 0;
+}
+
+.figureFullBleed .shot {
+  height: 70vh;
+  min-height: 420px;
+  max-height: 760px;
+}
+
+.figureCinema {
+  max-width: 1100px;
+}
+
+.figureFeature {
+  max-width: 1100px;
+}
+
+.caption {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  /* Legacy was rgba(...,.3) — 2.4:1, illegible. Lifted to clear AA. */
+  color: var(--muted);
+  padding-top: 12px;
+}
+
+.figureFullBleed .caption {
+  padding-inline: 36px;
+}
+
+/* ── Pairs and stacks ── */
+
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  max-width: 1100px;
+  margin: 56px auto;
+  padding-inline: 24px;
+}
+
+.stack {
+  max-width: 1100px;
+  margin: 56px auto;
+  padding-inline: 24px;
+  display: grid;
+  gap: 12px;
+}
+
+.stackRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+/* ── Gallery ── */
+
+.gallery {
+  max-width: 1400px;
+  margin: 80px auto;
+  padding-inline: 24px;
+}
+
+.galleryLabel {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 28px;
+  display: block;
+}
+
+.galleryRhythm {
+  display: grid;
+  gap: 12px;
+}
+
+/* The legacy cadence: one wide frame, then a two-up row, repeating. */
+.galleryRhythm > .galleryRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.galleryItem {
+  position: relative;
+  margin: 0;
+}
+
+.galleryCaption {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  padding: 16px;
+  background: linear-gradient(0deg, rgba(8, 8, 8, 0.92) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.galleryTitle {
+  display: block;
+  font-family: var(--serif);
+  font-size: 17px;
+  color: var(--white);
+}
+
+.gallerySub {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ── Split feature ── */
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+  max-width: 1300px;
+  margin: 80px auto;
+  padding-inline: 36px;
+}
+
+.splitRight .splitImage {
+  order: 2;
+}
+
+.splitEyebrow {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  display: block;
+}
+
+.splitHeading {
+  font-family: var(--serif);
+  font-size: clamp(26px, 3vw, 40px);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--white);
+  margin: 0 0 28px;
+}
+
+.splitBody p {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--prose);
+  margin-bottom: 1.2em;
+}
+
+.specs {
+  display: grid;
+  gap: 0;
+  margin-top: 32px;
+  border-top: 1px solid var(--border);
+}
+
+.specs > div {
+  display: flex;
+  gap: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.specs dt {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  min-width: 130px;
+  flex-shrink: 0;
+  padding-top: 3px;
+}
+
+.specs dd {
+  font-size: 16px;
+  color: var(--prose);
+}
+
+/* ── Carousel ── */
+
+.carousel {
+  max-width: 1400px;
+  margin: 72px auto;
+  padding-inline: 24px;
+}
+
+.carouselTrack {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 12px;
+  /* Keyboard users scroll this with arrow keys; give it a focus ring. */
+  scrollbar-width: thin;
+}
+
+.carouselItem {
+  flex: 0 0 clamp(260px, 38vw, 460px);
+  scroll-snap-align: start;
+  margin: 0;
+}
+
+/* ── Awards and results ── */
+
+.listBlock {
+  max-width: 900px;
+  margin: 72px auto;
+  padding-inline: 36px;
+}
+
+.listLabel {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+  display: block;
+}
+
+.listHeading {
+  font-family: var(--serif);
+  font-size: clamp(24px, 2.6vw, 34px);
+  font-weight: 300;
+  color: var(--white);
+  margin-bottom: 12px;
+}
+
+.listIntro {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--prose);
+  margin-bottom: 28px;
+  max-width: 60ch;
+}
+
+.awardRow {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.awardTitle {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  min-width: 180px;
+  flex-shrink: 0;
+}
+
+.awardCar {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--white);
+}
+
+.awardNote {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.resultRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.resultCar {
+  font-family: var(--serif);
+  font-size: 19px;
+  color: var(--white);
+}
+
+.resultDetail {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-top: 6px;
+  max-width: 52ch;
+  white-space: pre-line;
+}
+
+.resultPrice {
+  font-family: var(--mono);
+  font-size: 15px;
+  color: var(--gold);
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Every figure states what it represents — no unlabelled price is rendered. */
+.resultBasis {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.footnote {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 32px;
+  line-height: 1.9;
+  white-space: pre-line;
+}
+
+/* ── Divider ── */
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  max-width: 900px;
+  margin: 72px auto;
+  padding-inline: 36px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--gold-soft);
+}
+
+.dividerMark {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+/* ── Video ── */
+
+.video {
+  max-width: 1100px;
+  margin: 64px auto;
+  padding-inline: 24px;
+}
+
+.video video {
+  width: 100%;
+  display: block;
+  background: var(--surface);
+}
+
+.videoLabel {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-top: 12px;
+}
+
+/* ── Compact viewports ── */
+
+@media (max-width: 760px) {
+  .copy,
+  .pull {
+    padding-inline: 22px;
+  }
+  .figure,
+  .pair,
+  .stack,
+  .gallery,
+  .carousel {
+    padding-inline: 16px;
+    margin-block: 40px;
+  }
+  .listBlock,
+  .divider,
+  .split {
+    padding-inline: 22px;
+  }
+  .split {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-block: 56px;
+  }
+  .splitRight .splitImage {
+    order: 0;
+  }
+  .pair,
+  .galleryRhythm > .galleryRow {
+    grid-template-columns: 1fr;
+  }
+  .galleryGrid {
+    grid-template-columns: 1fr;
+  }
+  .awardRow {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .awardTitle {
+    min-width: 0;
+  }
+  .resultRow {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .resultPrice {
+    text-align: left;
+  }
+  .figureFullBleed .shot {
+    height: 56vh;
+    min-height: 300px;
+  }
+}

@@ -1,0 +1,145 @@
+/* ---------------------------------------------------------------------------
+   AutoKulture Collective — Journal
+   Ported from the legacy assets/akc.css. That file existed in seven divergent
+   inline copies across the old pages; this is the single reconciled source.
+
+   Single fixed dark palette, no light-mode inversion — the same stance the
+   auctions site takes in the opposite direction. Every colour is painted
+   explicitly so the page holds on any host ground.
+--------------------------------------------------------------------------- */
+
+:root {
+  --black: #080808;
+  --deep: #0f0f0f;
+  --surface: #141414;
+  --border: rgba(255, 255, 255, 0.07);
+
+  --gold: #c9a84c;
+  --gold-soft: rgba(201, 168, 76, 0.1);
+
+  --white: #f0ede8;
+  /* The legacy muted was rgba(240,237,232,.4) — 3.1:1 on #080808, under AA.
+     Lifted to .58 (≈5.2:1) so small uppercase labels actually read. */
+  --muted: rgba(240, 237, 232, 0.58);
+  --prose: rgba(240, 237, 232, 0.78);
+  --faint: rgba(240, 237, 232, 0.12);
+
+  --serif: var(--font-cormorant), Georgia, 'Times New Roman', serif;
+  --mono: var(--font-dm-mono), ui-monospace, 'SF Mono', Menlo, monospace;
+  /* The header wordmark only, so the top bar matches the auctions site. */
+  --wordmark: var(--font-playfair), Georgia, serif;
+
+  /* Per-article reading scale. Overridden by [data-density] on the article. */
+  --copy: 740px;
+  --copy-size: clamp(16px, 2vw, 19px);
+  --copy-leading: 1.85;
+}
+
+/* Article IV is the one legacy piece that genuinely set a larger scale. */
+[data-density='generous'] {
+  --copy: 660px;
+  --copy-size: clamp(20px, 1.45vw, 24px);
+  --copy-leading: 1.82;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--serif);
+  font-weight: 300;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Film grain over the whole page — the legacy site's signature texture. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+/* The legacy site hid the cursor globally for a custom one. That removed the
+   pointer for everyone on a mouse, including anyone who never saw the custom
+   cursor render, so it is not carried over. */
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+/* Shared label treatment: the gold rule-and-caps section marker. */
+.sectionLabel {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sectionLabel::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Visually hidden until focused — the skip link. */
+.skipLink {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 1100;
+}
+
+.skipLink:focus {
+  left: 16px;
+  top: 16px;
+  padding: 12px 18px;
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

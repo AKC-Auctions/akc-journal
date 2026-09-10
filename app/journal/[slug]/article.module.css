@@ -1,0 +1,158 @@
+.hero {
+  position: relative;
+  height: 76vh;
+  min-height: 460px;
+  max-height: 860px;
+  overflow: hidden;
+  background: var(--deep);
+}
+
+.heroPhoto {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+
+/* Keeps the headline legible over whatever the photograph is doing. */
+.heroScrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    0deg,
+    rgba(8, 8, 8, 0.96) 0%,
+    rgba(8, 8, 8, 0.35) 45%,
+    rgba(8, 8, 8, 0.55) 100%
+  );
+}
+
+.head {
+  max-width: var(--copy);
+  margin-inline: auto;
+  padding: 64px 36px 8px;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+
+.title {
+  font-family: var(--serif);
+  font-size: clamp(34px, 6vw, 68px);
+  font-weight: 300;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  color: var(--white);
+  text-wrap: balance;
+}
+
+.subtitle {
+  font-family: var(--serif);
+  font-size: clamp(17px, 2.2vw, 22px);
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--muted);
+  margin-top: 18px;
+  max-width: 52ch;
+}
+
+.rule {
+  height: 1px;
+  background: var(--border);
+  margin: 32px 0 20px;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 40px;
+}
+
+.metaDot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+/* ── "In preparation" placeholder ── */
+
+.placeholder {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 120px 36px 80px;
+}
+
+.placeholder p {
+  font-size: 19px;
+  line-height: 1.85;
+  color: var(--prose);
+  margin-bottom: 1.4em;
+}
+
+/* ── Foot of the article ── */
+
+.end {
+  max-width: 900px;
+  margin: 80px auto 0;
+  padding-inline: 36px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.end::before,
+.end::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.endMark {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.more {
+  max-width: 1400px;
+  margin: 80px auto 0;
+  padding: 0 24px 80px;
+}
+
+.moreLabel {
+  margin-bottom: 28px;
+}
+
+@media (max-width: 760px) {
+  .hero {
+    height: 62vh;
+    min-height: 340px;
+  }
+  .head {
+    padding: 40px 22px 4px;
+  }
+  .placeholder {
+    padding: 72px 22px 56px;
+  }
+  .end,
+  .more {
+    padding-inline: 22px;
+  }
+}

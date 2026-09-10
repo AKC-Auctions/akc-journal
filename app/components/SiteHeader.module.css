@@ -1,0 +1,114 @@
+/**
+ * The top bar, matching the auctions site's header structure: navigation on
+ * the left, wordmark on the right, obsidian ground, hairline rule beneath.
+ * The auctions nav is already a dark bar sitting on a light site, so on this
+ * site's black ground it reads as the same object rather than a transplant.
+ */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  background: #0a0a0a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: opacity 0.2s ease-out;
+}
+
+@media (min-width: 768px) {
+  .nav {
+    padding: 20px 40px;
+  }
+}
+
+.links {
+  display: none;
+  align-items: center;
+  gap: 24px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+@media (min-width: 768px) {
+  .links {
+    display: flex;
+  }
+}
+
+.links a {
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.links a:hover,
+.links a[aria-current='page'] {
+  color: var(--gold);
+}
+
+.trigger {
+  display: inline-flex;
+  background: none;
+  border: 0;
+  color: rgba(255, 255, 255, 0.75);
+  /* 44px hit area from a 20px icon, without changing the visual size. */
+  padding: 12px;
+  margin: -12px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.trigger:hover {
+  color: var(--gold);
+}
+
+@media (min-width: 768px) {
+  .trigger {
+    display: none;
+  }
+}
+
+.wordmark {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  border-radius: 2px;
+}
+
+@media (min-width: 768px) {
+  .wordmark {
+    gap: 12px;
+  }
+}
+
+/* Playfair rather than this site's Cormorant: the lockup is shared with the
+   auctions site and has to read as the same mark on both. */
+.mark {
+  font-family: var(--wordmark);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  color: #fbfaf7;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .mark {
+    font-size: 18px;
+  }
+}
+
+.markStrong {
+  font-weight: 700;
+}
+
+.markLight {
+  font-weight: 400;
+  opacity: 0.65;
+}

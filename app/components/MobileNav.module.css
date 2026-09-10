@@ -1,0 +1,82 @@
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  border: 0;
+  width: 100%;
+  cursor: pointer;
+}
+
+.panel {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 61;
+  background: #0a0a0a;
+  border-bottom: 1px solid var(--border);
+  padding: 20px 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.mark {
+  font-family: var(--wordmark);
+  font-size: 17px;
+  color: #fbfaf7;
+}
+
+.markStrong {
+  font-weight: 700;
+}
+
+.markLight {
+  font-weight: 400;
+  opacity: 0.65;
+}
+
+.close {
+  display: inline-flex;
+  background: none;
+  border: 0;
+  color: var(--white);
+  padding: 12px;
+  margin: -12px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close:hover {
+  color: var(--gold);
+}
+
+.link {
+  display: block;
+  padding: 14px 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+
+.link:last-child {
+  border-bottom: 0;
+}
+
+.link:hover,
+.link[aria-current='page'] {
+  color: var(--gold);
+}

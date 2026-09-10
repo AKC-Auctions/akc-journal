@@ -1,0 +1,53 @@
+/**
+ * Blur-up frame. The legacy pages stacked a hand-pasted base64 thumbnail
+ * under each photograph and faded it out with an inline onload handler;
+ * this does the same with Sanity's LQIP, in CSS, with no inline script.
+ */
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.placeholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(12px);
+  transform: scale(1.06);
+}
+
+.img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Painted over the placeholder as soon as it decodes. No JS: a decoded
+     image simply covers what is behind it. */
+  animation: reveal 0.5s ease forwards;
+}
+
+/* When the frame is given a fixed shape, the image fills it. */
+.cover {
+  position: absolute;
+  inset: 0;
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .img {
+    animation: none;
+    opacity: 1;
+  }
+}

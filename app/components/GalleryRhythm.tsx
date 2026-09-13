@@ -1,13 +1,8 @@
-import Photo from './Photo'
-import {WIDTHS, SIZES, type SanityImage} from '@/lib/image'
+import MediaFrame, {type FrameValue} from './Frame'
+import {WIDTHS, SIZES} from '@/lib/image'
 import styles from './ArticleBody.module.css'
 
-type Item = {
-  image?: SanityImage
-  alt?: string
-  title?: string
-  subtitle?: string
-}
+type Item = FrameValue & {title?: string; subtitle?: string}
 
 type GalleryValue = {
   label?: string
@@ -36,12 +31,11 @@ function intoRhythm(items: Item[]): Item[][] {
 }
 
 function Frame({item, wide}: {item: Item; wide: boolean}) {
-  if (!item?.image) return null
+  if (!item) return null
   return (
     <figure className={styles.galleryItem}>
-      <Photo
-        source={item.image}
-        alt={item.alt || item.title || ''}
+      <MediaFrame
+        value={{...item, alt: item.alt || item.title || ''}}
         widths={wide ? WIDTHS.fullBleed : WIDTHS.pair}
         sizes={wide ? SIZES.full : SIZES.pair}
         aspect={wide ? 16 / 9 : 4 / 3}
@@ -57,7 +51,8 @@ function Frame({item, wide}: {item: Item; wide: boolean}) {
 }
 
 export default function GalleryRhythm({value}: {value: GalleryValue}) {
-  const items = (value.items || []).filter((i) => i?.image)
+  // Keep any frame that has a usable source — uploaded asset or external URL.
+  const items = (value.items || []).filter((i) => i?.image?.asset || i?.url)
   if (items.length === 0) return null
 
   return (

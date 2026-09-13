@@ -18,8 +18,12 @@ const BODY = `body[]{
   _type == "gallery"      => {..., items[]{..., image${IMAGE}}},
   _type == "carousel"     => {..., items[]{..., image${IMAGE}}},
   _type == "splitFeature" => {..., image${IMAGE}},
+  _type == "highlightBox" => {..., image${IMAGE}},
   _type == "videoBlock"   => {..., poster${IMAGE}, "url": file.asset->url}
 }`
+// The spread carries the external-image fields (source, url, width, height)
+// and the placement fields (layout, align) on every block, so only the
+// uploaded-asset expansion needs naming above.
 
 export type PortableBlock = {_type: string; _key: string; [k: string]: unknown}
 

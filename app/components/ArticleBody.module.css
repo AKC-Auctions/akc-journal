@@ -551,3 +551,216 @@
     min-height: 300px;
   }
 }
+
+/* ── Placement ──
+   Alignment applies when a frame is narrower than the space it sits in.
+   Full-bleed frames ignore it: there is no room left to align within. */
+
+/* Qualified with .figure so these beat the `margin: 56px auto` shorthand on
+   .figure itself, which has equal specificity and would otherwise win or lose
+   on source order alone. */
+.figure.alignCenter { margin-inline: auto; }
+.figure.alignLeft   { margin-inline: 0 auto; }
+.figure.alignRight  { margin-inline: auto 0; }
+
+.figure.figureFullBleed.alignLeft,
+.figure.figureFullBleed.alignRight,
+.figure.figureFullBleed.alignCenter { margin-inline: 0; }
+
+/* ── Table ── */
+
+.tableBlock {
+  max-width: var(--copy);
+  margin: 48px auto;
+  padding-inline: 36px;
+}
+
+.tableWide {
+  max-width: 1100px;
+}
+
+/* Scrolls inside itself so a wide table never moves the page sideways. */
+.tableScroll {
+  overflow-x: auto;
+  border-top: 1px solid var(--gold-soft);
+}
+
+.tableScroll:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.tableBlock table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.tableCaption {
+  caption-side: top;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding-bottom: 14px;
+}
+
+.tableBlock th,
+.tableBlock td {
+  text-align: left;
+  padding: 12px 24px 12px 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  font-weight: 300;
+}
+
+.tableBlock thead th {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.tableBlock tbody th {
+  color: var(--white);
+}
+
+.tableBlock td {
+  color: var(--prose);
+}
+
+/* Figures line up and compare only with lining, tabular digits.
+   Scoped under .tableBlock so it outranks the .tableBlock th/td rule above —
+   a bare .num loses the cascade to it and silently does nothing. */
+.tableBlock .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums lining-nums;
+  white-space: nowrap;
+  padding-right: 0;
+}
+
+/* ── Highlight box ── */
+
+.highlight {
+  max-width: var(--copy);
+  margin: 56px auto;
+  padding-inline: 36px;
+}
+
+.hlSplit {
+  max-width: 1100px;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.hlImageRight .hlImage {
+  order: 2;
+}
+
+.hlImage img,
+.hlImage > div {
+  width: 100%;
+}
+
+.hlEyebrow {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+
+.hlHeading {
+  font-family: var(--serif);
+  font-size: clamp(24px, 2.8vw, 36px);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--white);
+  margin: 0 0 20px;
+  text-wrap: balance;
+}
+
+.hlBody p {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--prose);
+  margin-bottom: 1.1em;
+}
+
+.hlBody p:last-child {
+  margin-bottom: 0;
+}
+
+.hlBody ul {
+  margin: 0 0 1.1em 1.1em;
+  color: var(--prose);
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.hlBody a {
+  color: var(--gold);
+  text-underline-offset: 3px;
+}
+
+/* Gold rules above and below — the quietest of the three. */
+.hlRuled .hlBody {
+  border-top: 1px solid var(--gold);
+  border-bottom: 1px solid var(--gold);
+  padding-block: 28px;
+}
+
+/* A tinted block that lifts off the page. */
+.hlPanel .hlBody {
+  background: var(--surface);
+  border-left: 2px solid var(--gold);
+  padding: 28px 32px;
+}
+
+/* Quieter and smaller — an aside rather than a statement. */
+.hlNote .hlBody {
+  border-left: 1px solid var(--border);
+  padding-left: 24px;
+}
+
+.hlNote .hlBody p {
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.hlNote .hlHeading {
+  font-size: clamp(18px, 2vw, 22px);
+}
+
+@media (max-width: 760px) {
+  .tableBlock,
+  .highlight {
+    padding-inline: 22px;
+    margin-block: 40px;
+  }
+  .hlSplit {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .hlImageRight .hlImage {
+    order: 0;
+  }
+  .hlImage {
+    max-width: 300px;
+  }
+  .tableBlock table {
+    font-size: 14px;
+  }
+  .tableBlock th,
+  .tableBlock td {
+    padding-right: 16px;
+  }
+}

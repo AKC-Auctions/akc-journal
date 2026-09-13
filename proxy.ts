@@ -11,8 +11,10 @@ import type {NextRequest} from 'next/server'
  * <script> tags pick it up because it appears in this response's CSP header.
  *
  * Every external origin the site loads from a browser:
- * - Sanity's CDN, for all photography (img-src) and the journal video assets
- *   (media-src). Nothing else is fetched cross-origin.
+ * - Sanity's CDN, for uploaded photography and video assets.
+ * - media.autokulturecollective.com, the R2 bucket holding images and files
+ *   referenced by URL rather than uploaded. Both img-src and media-src, since
+ *   it may serve either.
  * - Fonts are self-hosted by next/font at build time, so neither
  *   fonts.googleapis.com nor fonts.gstatic.com needs listing — unlike the
  *   legacy static site, which pulled both at runtime.
@@ -33,8 +35,8 @@ export function proxy(request: NextRequest) {
   const csp = [
     "default-src 'self'",
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ''}`,
-    "img-src 'self' data: https://cdn.sanity.io",
-    "media-src 'self' https://cdn.sanity.io",
+    "img-src 'self' data: https://cdn.sanity.io https://media.autokulturecollective.com",
+    "media-src 'self' https://cdn.sanity.io https://media.autokulturecollective.com",
     "style-src 'self' 'unsafe-inline'",
     "font-src 'self' data:",
     `connect-src 'self'${isDev ? ' ws: wss:' : ''}`,

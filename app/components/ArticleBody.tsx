@@ -1,11 +1,17 @@
 import {PortableText, type PortableTextComponents} from '@portabletext/react'
-import Photo from './Photo'
+import Frame, {type FrameValue} from './Frame'
 import GalleryRhythm from './GalleryRhythm'
-import {WIDTHS, SIZES, type SanityImage} from '@/lib/image'
+import {WIDTHS, SIZES} from '@/lib/image'
 import type {PortableBlock} from '@/sanity/queries'
 import styles from './ArticleBody.module.css'
 
-type Img = {image?: SanityImage; alt?: string; caption?: string; layout?: string}
+type Img = FrameValue
+
+const ALIGN_CLASS: Record<string, string> = {
+  left: styles.alignLeft,
+  center: styles.alignCenter,
+  right: styles.alignRight,
+}
 
 const FIGURE_CLASS: Record<string, string> = {
   inline: styles.figureInline,
@@ -25,13 +31,14 @@ const FIGURE_WIDTHS: Record<string, readonly number[]> = {
 }
 
 function Figure({value}: {value: Img}) {
-  if (!value.image) return null
   const layout = value.layout || 'inline'
+  const align = ALIGN_CLASS[value.align || 'center'] ?? styles.alignCenter
   return (
-    <figure className={`${styles.figure} ${FIGURE_CLASS[layout] ?? styles.figureInline}`}>
-      <Photo
-        source={value.image}
-        alt={value.alt || ''}
+    <figure
+      className={`${styles.figure} ${FIGURE_CLASS[layout] ?? styles.figureInline} ${align}`}
+    >
+      <Frame
+        value={value}
         widths={FIGURE_WIDTHS[layout] ?? WIDTHS.inline}
         sizes={layout === 'fullBleed' || layout === 'cinema' ? SIZES.full : SIZES.inline}
         className={styles.shot}
@@ -80,17 +87,9 @@ export const articleComponents: PortableTextComponents = {
     imagePair: ({value}: {value: {images?: Img[]; caption?: string}}) => (
       <>
         <div className={styles.pair}>
-          {(value.images || []).map((im, i) =>
-            im.image ? (
-              <Photo
-                key={i}
-                source={im.image}
-                alt={im.alt || ''}
-                widths={WIDTHS.pair}
-                sizes={SIZES.pair}
-              />
-            ) : null
-          )}
+          {(value.images || []).map((im, i) => (
+            <Frame key={i} value={im} widths={WIDTHS.pair} sizes={SIZES.pair} />
+          ))}
         </div>
         {value.caption && <p className={`${styles.copy} ${styles.caption}`}>{value.caption}</p>}
       </>
@@ -98,26 +97,11 @@ export const articleComponents: PortableTextComponents = {
 
     imageStack: ({value}: {value: {lead?: Img; row?: Img[]}}) => (
       <div className={styles.stack}>
-        {value.lead?.image && (
-          <Photo
-            source={value.lead.image}
-            alt={value.lead.alt || ''}
-            widths={WIDTHS.fullBleed}
-            sizes={SIZES.full}
-          />
-        )}
+        <Frame value={value.lead} widths={WIDTHS.fullBleed} sizes={SIZES.full} />
         <div className={styles.stackRow}>
-          {(value.row || []).map((im, i) =>
-            im.image ? (
-              <Photo
-                key={i}
-                source={im.image}
-                alt={im.alt || ''}
-                widths={WIDTHS.pair}
-                sizes={SIZES.pair}
-              />
-            ) : null
-          )}
+          {(value.row || []).map((im, i) => (
+            <Frame key={i} value={im} widths={WIDTHS.pair} sizes={SIZES.pair} />
+          ))}
         </div>
       </div>
     ),
@@ -129,15 +113,7 @@ export const articleComponents: PortableTextComponents = {
         className={`${styles.split} ${value.imageSide === 'right' ? styles.splitRight : ''}`}
       >
         <div className={styles.splitImage}>
-          {value.image && (
-            <Photo
-              source={value.image}
-              alt={value.alt || ''}
-              widths={WIDTHS.split}
-              sizes={SIZES.split}
-              aspect={3 / 4}
-            />
-          )}
+          <Frame value={value} widths={WIDTHS.split} sizes={SIZES.split} aspect={3 / 4} />
         </div>
         <div>
           {value.eyebrow && <span className={styles.splitEyebrow}>{value.eyebrow}</span>}
@@ -166,20 +142,17 @@ export const articleComponents: PortableTextComponents = {
         {value.eyebrow && <span className={styles.galleryLabel}>{value.eyebrow}</span>}
         {/* Scrollable region gets keyboard access and an accessible name. */}
         <div className={styles.carouselTrack} tabIndex={0} role="group" aria-label="Scrollable photographs">
-          {(value.items || []).map((im: Img, i: number) =>
-            im.image ? (
-              <figure key={i} className={styles.carouselItem}>
-                <Photo
-                  source={im.image}
-                  alt={im.alt || ''}
-                  widths={WIDTHS.carousel}
-                  sizes={SIZES.carousel}
-                  aspect={4 / 3}
-                />
-                {im.caption && <figcaption className={styles.caption}>{im.caption}</figcaption>}
-              </figure>
-            ) : null
-          )}
+          {(value.items || []).map((im: Img, i: number) => (
+            <figure key={i} className={styles.carouselItem}>
+              <Frame
+                value={im}
+                widths={WIDTHS.carousel}
+                sizes={SIZES.carousel}
+                aspect={4 / 3}
+              />
+              {im.caption && <figcaption className={styles.caption}>{im.caption}</figcaption>}
+            </figure>
+          ))}
         </div>
       </section>
     ),
@@ -250,6 +223,106 @@ export const articleComponents: PortableTextComponents = {
         {value.footnote && <p className={styles.footnote}>{value.footnote}</p>}
       </section>
     ),
+
+    dataTable: ({value}) => {
+      const rows: string[][] = (value.rows || []).map(
+        (r: {cells?: string[]}) => r.cells || []
+      )
+      if (rows.length === 0) return null
+
+      // Pad ragged rows so the table can never collapse into a broken grid.
+      const columns = Math.max(...rows.map((r) => r.length))
+      const pad = (r: string[]) => [...r, ...Array(columns - r.length).fill('')]
+
+      const header = value.headerRow ? pad(rows[0]) : null
+      const body = (value.headerRow ? rows.slice(1) : rows).map(pad)
+      // 1-indexed in the Studio, because that is how an editor counts columns.
+      const firstNumeric = value.numericFrom ? value.numericFrom - 1 : Infinity
+
+      return (
+        <figure
+          className={`${styles.tableBlock} ${value.layout === 'wide' ? styles.tableWide : ''}`}
+        >
+          {/* Its own scroll container, so a wide table never pushes the page sideways. */}
+          <div className={styles.tableScroll} tabIndex={0} role="group" aria-label={value.caption || 'Table'}>
+            <table>
+              {value.caption && <caption className={styles.tableCaption}>{value.caption}</caption>}
+              {header && (
+                <thead>
+                  <tr>
+                    {header.map((c, i) => (
+                      <th key={i} scope="col" className={i >= firstNumeric ? styles.num : undefined}>
+                        {c}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+              )}
+              <tbody>
+                {body.map((r, i) => (
+                  <tr key={i}>
+                    {r.map((c, j) =>
+                      j === 0 && header ? (
+                        <th key={j} scope="row">
+                          {c}
+                        </th>
+                      ) : (
+                        <td key={j} className={j >= firstNumeric ? styles.num : undefined}>
+                          {c}
+                        </td>
+                      )
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </figure>
+      )
+    },
+
+    highlightBox: ({value}) => {
+      const variant =
+        value.variant === 'panel'
+          ? styles.hlPanel
+          : value.variant === 'note'
+            ? styles.hlNote
+            : styles.hlRuled
+      const withImage = value.hasImage && (value.image?.asset || value.url)
+      const beside = withImage && value.imageSide !== 'above'
+
+      return (
+        <aside className={`${styles.highlight} ${variant} ${beside ? styles.hlSplit : ''} ${
+          beside && value.imageSide === 'right' ? styles.hlImageRight : ''
+        }`}>
+          {withImage && (
+            <div className={styles.hlImage}>
+              <Frame
+                value={value}
+                widths={WIDTHS.pair}
+                sizes={beside ? SIZES.pair : SIZES.inline}
+                aspect={beside ? 3 / 4 : 16 / 9}
+              />
+            </div>
+          )}
+          <div className={styles.hlBody}>
+            {value.eyebrow && <span className={styles.hlEyebrow}>{value.eyebrow}</span>}
+            {value.heading && <h2 className={styles.hlHeading}>{value.heading}</h2>}
+            {value.body && <PortableText value={value.body} />}
+            {value.specs?.length > 0 && (
+              <dl className={styles.specs}>
+                {value.specs.map((s: {label: string; value: string}, i: number) => (
+                  <div key={i}>
+                    <dt>{s.label}</dt>
+                    <dd>{s.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+          </div>
+        </aside>
+      )
+    },
 
     divider: ({value}) => (
       <div className={styles.divider} role="separator">

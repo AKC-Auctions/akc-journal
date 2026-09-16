@@ -65,6 +65,56 @@ export type ResponsiveImage = {
 }
 
 /**
+ * The R2 bucket behind the Journal's external images. Only files on this host
+ * can be resized: Cloudflare's resizer runs at the edge of this zone, so it is
+ * the one origin it will transform without cross-origin configuration.
+ */
+export const MEDIA_HOST = 'media.autokulturecollective.com'
+
+/**
+ * Builds a `srcSet` for an external image through Cloudflare's image resizing,
+ * which serves per-device widths and WebP/AVIF from the original in the bucket
+ * — otherwise a 1.6MB original is what a phone downloads.
+ *
+ * Returns null when the URL is not on the media host, since the resizer cannot
+ * transform an origin it does not sit in front of. The caller then serves the
+ * URL exactly as given, which is what happened to every external image before.
+ *
+ * NOTE: this requires image transformations to be enabled for the zone in the
+ * Cloudflare dashboard. Until they are, /cdn-cgi/image/ URLs 404 rather than
+ * falling back to the original — hence the per-image switch in the Studio.
+ */
+export function resizedImage(
+  url: string,
+  opts: {widths: readonly number[]; sizes: string; aspect?: number}
+): ResponsiveImage | null {
+  const {widths, sizes, aspect} = opts
+
+  let parsed: URL
+  try {
+    parsed = new URL(url)
+  } catch {
+    return null
+  }
+  if (parsed.hostname !== MEDIA_HOST) return null
+
+  const build = (w: number) => {
+    // fit=scale-down never enlarges past the original; with an aspect it has to
+    // be a crop, so the shape is identical at every width and nothing shifts.
+    const options = [`width=${w}`, 'format=auto', 'quality=75']
+    if (aspect) options.push(`height=${Math.round(w / aspect)}`, 'fit=crop')
+    else options.push('fit=scale-down')
+    return `${parsed.origin}/cdn-cgi/image/${options.join(',')}${parsed.pathname}${parsed.search}`
+  }
+
+  return {
+    src: build(widths[widths.length - 1]),
+    srcSet: widths.map((w) => `${build(w)} ${w}w`).join(', '),
+    sizes,
+  }
+}
+
+/**
  * Builds a `srcSet` across the given widths. `aspect` (w/h) keeps every
  * candidate the same shape so the browser can swap between them without the
  * layout shifting; omit it to let the image keep its natural proportions.

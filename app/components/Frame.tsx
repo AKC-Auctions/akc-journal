@@ -1,5 +1,5 @@
 import Photo from './Photo'
-import type {SanityImage} from '@/lib/image'
+import {resizedImage, type SanityImage} from '@/lib/image'
 import styles from './Photo.module.css'
 
 /**
@@ -13,6 +13,8 @@ export type FrameValue = {
   url?: string
   width?: number
   height?: number
+  /** External images only. Unset counts as on — see below. */
+  optimize?: boolean
   alt?: string
   caption?: string
   layout?: string
@@ -23,10 +25,15 @@ export type FrameValue = {
  * Renders whichever source the block carries.
  *
  * Uploaded images go through Photo, which builds a Sanity CDN srcset and a
- * blur-up placeholder. External images can do neither — there is no transform
- * pipeline behind a plain bucket — so they are served exactly as uploaded,
- * with width and height applied when the editor supplied them so the page can
- * still reserve space and avoid a layout jump.
+ * blur-up placeholder.
+ *
+ * External images get a srcset too, through Cloudflare's resizer on the media
+ * host — without one, the original is what every phone downloads. An editor can
+ * switch that off per image, for a file that has to arrive byte-for-byte (an
+ * SVG, an animated GIF), and it is off by definition for any URL somewhere
+ * other than the media host, which the resizer cannot transform. Either way the
+ * URL is then served exactly as given, with the editor's width and height so
+ * the page can still reserve space.
  */
 export default function Frame({
   value,
@@ -51,6 +58,11 @@ export default function Frame({
   if (value.source === 'url') {
     if (!value.url) return null
     const ratio = aspect ?? (value.width && value.height ? value.width / value.height : undefined)
+    // Unset means resize: the switch was added after these blocks existed, and
+    // the whole point of adding it was that an untouched external image should
+    // stop being served full-size.
+    const resized =
+      value.optimize === false ? null : resizedImage(value.url, {widths, sizes, aspect: ratio})
     return (
       <div
         className={`${styles.frame} ${className}`}
@@ -59,7 +71,9 @@ export default function Frame({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           className={`${styles.img} ${fill || ratio ? styles.cover : ''}`}
-          src={value.url}
+          src={resized ? resized.src : value.url}
+          srcSet={resized?.srcSet}
+          sizes={resized?.sizes}
           alt={alt}
           width={value.width}
           height={value.height}
